@@ -4,6 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
+  <Button
+	   android:id="@+id/btget"
+	   android:layout_width="fill_parent"
+	   android:layout_height="wrap_content"
+	   android:onClick="onClick"
+	   android:text="@string/bt_get" />
+  
    <Button
         android:id="@+id/bt"
         android:layout_width="fill_parent"
