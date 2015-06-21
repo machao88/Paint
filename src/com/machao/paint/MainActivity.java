@@ -16,6 +16,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuffXfermode;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -51,12 +52,12 @@ public class MainActivity extends Activity {
 		paint = new Paint();
 		paint.setStrokeWidth(5);
 		paint.setColor(Color.BLACK);
-		
+		paint.setXfermode(new PorterDuffXfermode(android.graphics.PorterDuff.Mode.DARKEN));
 		canvas = new Canvas(alterbitmap);
 		Matrix m = new Matrix();
 		canvas.drawBitmap(bitmap1, m, paint);
 		
-		Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+		Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.after);
 		canvas.drawBitmap(bitmap2, m, paint);
 		
 		iv_1.setImageBitmap(alterbitmap);
