@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
 		Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
 		iv_1.setImageBitmap(bitmap1);
 		
-		Bitmap bitmap2 = Bitmap.createBitmap(bitmap1.getWidth() * 2, bitmap1.getHeight(), bitmap1.getConfig());
+		Bitmap bitmap2 = Bitmap.createBitmap(bitmap1.getWidth() * 2, bitmap1.getHeight()*2, bitmap1.getConfig());
 		
 		
 		paint = new Paint();
@@ -58,13 +58,15 @@ public class MainActivity extends Activity {
 		canvas = new Canvas(bitmap2);
 //		canvas.drawColor(Color.WHITE);
 		Matrix m = new Matrix();
-		m.setValues(new float[]{
-			2.0f, 0, 0,
-			0, 1, 0,
-			0, 0, 1,
-		});
+//		m.setValues(new float[]{
+//			2.0f, 0, 0,
+//			0, 1, 0,
+//			0, 0, 1,
+//		});
 		//m.setScale(2.0f, 1.0f);
-		m.setRotate(45, bitmap1.getWidth()/2, bitmap1.getHeight()/2);//以图像中心为原点，旋转
+//		m.setRotate(45, bitmap1.getWidth()/2, bitmap1.getHeight()/2);//以图像中心为原点，旋转
+//		m.setTranslate(10, 10);//执行后，需要canvas.drawBitmap(bitmap1, m, paint); 生效。
+		m.postTranslate(10, 10);//执行后，会立即生效
 		paint.setAntiAlias(true);//消除锯齿，使图像旋转时，尽量不丢失数据。  看起来好一点点。
 		canvas.drawBitmap(bitmap1, m, paint);
 		
