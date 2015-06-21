@@ -30,9 +30,8 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 	private WindowManager wm;
 	
-	private ImageView iv;
-	private Button bt;
-	private Bitmap baseBitmap;
+	private ImageView iv_after, iv_pre;
+	private Bitmap afterbitmap;
 	private Canvas canvas;
 	private Paint paint;
 	
@@ -42,22 +41,31 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.mainlayout);
 		
-		wm = getWindowManager();
+		iv_after = (ImageView)findViewById(R.id.iv_after);
+		iv_pre = (ImageView)findViewById(R.id.iv_pre);
 		
-		bt = (Button)findViewById(R.id.bt);
-		iv = (ImageView)findViewById(R.id.iv);
+		BitmapFactory.Options opts = new Options();
+		opts.inSampleSize = 5;
+		
+		Bitmap after = BitmapFactory.decodeResource(getResources(), R.drawable.after, opts);
+		Bitmap pre = BitmapFactory.decodeResource(getResources(), R.drawable.pre, opts);
+		
+		afterbitmap = Bitmap.createBitmap(pre.getWidth(), pre.getHeight(), pre.getConfig());
+		
+		
 		paint = new Paint();
 		paint.setStrokeWidth(5);
-		paint.setColor(Color.GREEN);
+		paint.setColor(Color.BLACK);
 		
-//		baseBitmap = Bitmap.createBitmap(iv.getWidth(), iv.getHeight(), Bitmap.Config.ARGB_8888);
-		baseBitmap = Bitmap.createBitmap(480, 631, Bitmap.Config.ARGB_8888);
-//		System.out.println("iv.getWidth()="+iv.getWidth() + "  iv.getHeight()="+iv.getHeight());
-		canvas = new Canvas(baseBitmap);
-		canvas.drawColor(Color.WHITE);
+		canvas = new Canvas(afterbitmap);
+//		canvas.drawColor(Color.WHITE);
+		canvas.drawBitmap(pre, new Matrix(), paint);
+		
+		iv_after.setImageBitmap(after);
+		iv_pre.setImageBitmap(afterbitmap);
 
  
-		iv.setOnTouchListener(new View.OnTouchListener(){
+		iv_pre.setOnTouchListener(new View.OnTouchListener(){
 			int startX, startY, newX, newY;
 			
 			@Override
@@ -65,25 +73,17 @@ public class MainActivity extends Activity {
 				// TODO Auto-generated method stub
 				
 				switch(event.getAction()){
-				case MotionEvent.ACTION_DOWN:
-/*					baseBitmap = Bitmap.createBitmap(iv.getWidth(), iv.getHeight(), Bitmap.Config.ARGB_8888);
-					System.out.println("iv.getWidth()="+iv.getWidth() + "  iv.getHeight()="+iv.getHeight());
-					canvas = new Canvas(baseBitmap);
-					canvas.drawColor(Color.WHITE);*/
-					
-					startX = (int)event.getX();
-					startY = (int)event.getY();
-										
+				case MotionEvent.ACTION_DOWN:		
 					break;
 				case MotionEvent.ACTION_MOVE:
 					newX = (int)event.getX();
 					newY = (int)event.getY();
-					
-					canvas.drawLine(startX, startY, newX, newY, paint);
-					startX = (int)event.getX();
-					startY = (int)event.getY();
-					iv.setImageBitmap(baseBitmap);
-					
+					for(int i = -8; i < 8; i++)
+						for(int j = -8; j < 8; j++)
+							if((newX + i > 0 && newX + i < afterbitmap.getWidth()) 
+									&& (newY + j > 0 && newY + j < afterbitmap.getHeight()))
+								afterbitmap.setPixel(newX + i, newY + j, Color.TRANSPARENT);
+					iv_pre.setImageBitmap(afterbitmap);
 					break;
 				case MotionEvent.ACTION_UP:
 					break;
@@ -99,82 +99,7 @@ public class MainActivity extends Activity {
 	}
 
 	
-	public void save(View view){
-
-		try {
-			File file = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis()+".jpg");
-			FileOutputStream stream = new FileOutputStream(file);
-			baseBitmap.compress(CompressFormat.JPEG, 100, stream);
-			stream.close();
-			Toast.makeText(this, "写文件成功", 1).show();
-			
-			Intent intent = new Intent();
-			intent.setAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-			intent.setData(Uri.fromFile(Environment.getExternalStorageDirectory()));
-			sendBroadcast(intent);
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			Toast.makeText(this, "写文件失败", 1).show();
-			e.printStackTrace();
-		}
-	}
 	
-	public void onClick(View view){
-		Intent intent = new Intent();
-		intent.setAction("android.intent.action.PICK");
-		intent.addCategory("android.intent.category.DEFAULT");
-		intent.setType("image/*");
-		startActivityForResult(intent, 0);
-	}
-
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
-//		super.onActivityResult(requestCode, resultCode, data);
-		if (data != null) {
-			Uri uri = data.getData();
-			System.out.println(uri.toString());
-			
-			try{
-				InputStream is = getContentResolver().openInputStream(uri);
-				int windowWidth = wm.getDefaultDisplay().getWidth();
-				int windowHeight = wm.getDefaultDisplay().getHeight();
-				BitmapFactory.Options opts = new Options();
-				opts.inJustDecodeBounds = true;
-				BitmapFactory.decodeStream(is, null, opts);
-				int bitmapHeight = opts.outHeight;
-				int bitmapWidth = opts.outWidth;
-				if (bitmapHeight > windowHeight || bitmapWidth > windowWidth){
-					int scaleX = bitmapWidth / windowWidth;
-					int scaleY = bitmapHeight / windowHeight;
-					
-					opts.inSampleSize = scaleX > scaleY ? scaleX : scaleY;
-				}
-				else {
-					opts.inSampleSize = 1;
-				}
-				opts.inJustDecodeBounds = false;
-				
-				is = getContentResolver().openInputStream(uri);
-				Bitmap bitmap = BitmapFactory.decodeStream(is, null, opts);
-				
-//				baseBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-				canvas = new Canvas(baseBitmap);
-
-				paint.setColor(Color.GREEN);
-				canvas.drawBitmap(bitmap, new Matrix(), paint);
-				canvas.drawText("我是拷贝的图片", 10, 10, paint);
-				iv.setImageBitmap(baseBitmap);
-				paint.setColor(Color.BLUE);
-				
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-		}
-	}
 	
 	
 }
