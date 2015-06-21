@@ -69,6 +69,7 @@ public class MainActivity extends Activity {
 				PointF point = new PointF();
 				mface[i].getMidPoint(point);
 				System.out.println("脸中心坐标" + point.x +":"+ point.y);
+				
 			}
 		}
 		else {
