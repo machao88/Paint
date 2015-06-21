@@ -9,14 +9,33 @@
     <ImageView
         android:id="@+id/iv_1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="wrap_content" 
     />
     
-    <ImageView
-        android:id="@+id/iv_2"
-        android:layout_width="wrap_content"
+	<SeekBar
+	    android:id="@+id/sb1"
+	    android:max="255"
+	    android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-    />
+	/>
+	<SeekBar
+	    android:id="@+id/sb2"
+	    android:max="255"
+	    android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+	/>
+	<SeekBar
+	    android:id="@+id/sb3"
+	    android:max="255"
+	    android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+	/>
+	<SeekBar
+	    android:id="@+id/sb4"
+	    android:max="255"
+	    android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+	/>
 
 
 </LinearLayout>

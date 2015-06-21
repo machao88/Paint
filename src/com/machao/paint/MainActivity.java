@@ -14,6 +14,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuffXfermode;
@@ -25,17 +27,19 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Toast;
 
 
 public class MainActivity extends Activity {
-	private WindowManager wm;
-	
-	private ImageView iv_1, iv_2;
-	private Bitmap afterbitmap;
+	private ImageView iv_1;
 	private Canvas canvas;
 	private Paint paint;
-	
+	private SeekBar sb1,sb2,sb3,sb4;
+	private ColorMatrix cm;
+	private Bitmap alterbitmap, bitmap1;
+	private Matrix m;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,27 +47,149 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.mainlayout);
 		
 		iv_1 = (ImageView)findViewById(R.id.iv_1);
-		iv_2 = (ImageView)findViewById(R.id.iv_2);
+		sb1 = (SeekBar)findViewById(R.id.sb1);
+		sb2 = (SeekBar)findViewById(R.id.sb2);
+		sb3 = (SeekBar)findViewById(R.id.sb3);
+		sb4 = (SeekBar)findViewById(R.id.sb4);
 		
+		cm = new ColorMatrix();
 		
-		Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.pre);
-		Bitmap alterbitmap = Bitmap.createBitmap(bitmap1.getWidth(), bitmap1.getHeight(), bitmap1.getConfig());
+		bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.pre);
+		alterbitmap = Bitmap.createBitmap(bitmap1.getWidth(), bitmap1.getHeight(), bitmap1.getConfig());
 		
 		paint = new Paint();
 		paint.setStrokeWidth(5);
 		paint.setColor(Color.BLACK);
-		paint.setXfermode(new PorterDuffXfermode(android.graphics.PorterDuff.Mode.DARKEN));
+		paint.setColorFilter(new ColorMatrixColorFilter(cm));
 		canvas = new Canvas(alterbitmap);
-		Matrix m = new Matrix();
+		m = new Matrix();
 		canvas.drawBitmap(bitmap1, m, paint);
-		
-		Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.after);
-		canvas.drawBitmap(bitmap2, m, paint);
 		
 		iv_1.setImageBitmap(alterbitmap);
 		
- 
+		sb1.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar arg0) {
+				// TODO Auto-generated method stub
+				int progress = sb1.getProgress();
+				cm.set(new float[]{
+						progress/128.0f, 0, 0, 0, 0,
+						0, 1, 0, 0, 0,
+						0, 0, 1, 0, 0,
+						0, 0, 0, 1, 0,
+				});
+				paint.setColorFilter(new ColorMatrixColorFilter(cm));
+				canvas.drawBitmap(bitmap1, m, paint);
+				iv_1.setImageBitmap(alterbitmap);
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		
+		sb2.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar arg0) {
+				// TODO Auto-generated method stub
+				int progress = sb2.getProgress();
+				cm.set(new float[]{
+						1, 0, 0, 0, 0,
+						0, progress/128.0f, 0, 0, 0,
+						0, 0, 1, 0, 0,
+						0, 0, 0, 1, 0,
+				});
+				paint.setColorFilter(new ColorMatrixColorFilter(cm));
+				canvas.drawBitmap(bitmap1, m, paint);
+				iv_1.setImageBitmap(alterbitmap);
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		sb3.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar arg0) {
+				// TODO Auto-generated method stub
+				int progress = sb3.getProgress();
+				cm.set(new float[]{
+						1, 0, 0, 0, 0,
+						0, 1, 0, 0, 0,
+						0, 0, progress/128.0f, 0, 0,
+						0, 0, 0, 1, 0,
+				});
+				paint.setColorFilter(new ColorMatrixColorFilter(cm));
+				canvas.drawBitmap(bitmap1, m, paint);
+				iv_1.setImageBitmap(alterbitmap);
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		
+		//调节白的程度
+		sb4.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar arg0) {
+				// TODO Auto-generated method stub
+				int progress = sb4.getProgress();
+/*				cm.set(new float[]{
+						progress/128.0f, 0, 0, 0, 0,
+						0, progress/128.0f, 0, 0, 0,
+						0, 0, progress/128.0f, 0, 0,
+						0, 0, 0, 1, 0,
+				});*/
+				//或者用上面的方法 都可以 下面到一行简洁
+				cm.setSaturation(progress/128.0f);
+				paint.setColorFilter(new ColorMatrixColorFilter(cm));
+				canvas.drawBitmap(bitmap1, m, paint);
+				iv_1.setImageBitmap(alterbitmap);
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 
 	}
 
