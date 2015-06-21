@@ -19,8 +19,11 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PointF;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Typeface;
+import android.media.FaceDetector;
+import android.media.FaceDetector.Face;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -49,15 +52,28 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.mainlayout);
 		
 		iv_1 = (ImageView)findViewById(R.id.iv_1);
-		sb1 = (SeekBar)findViewById(R.id.sb1);
-		sb2 = (SeekBar)findViewById(R.id.sb2);
-		sb3 = (SeekBar)findViewById(R.id.sb3);
-		sb4 = (SeekBar)findViewById(R.id.sb4);
+
 		
 		cm = new ColorMatrix();
 		
-		bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.pre);
+		bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.face);
 		alterbitmap = Bitmap.createBitmap(bitmap1.getWidth(), bitmap1.getHeight(), bitmap1.getConfig());
+		
+		FaceDetector detector = new FaceDetector(bitmap1.getWidth(), bitmap1.getHeight(), 6);
+		Face mface[] = new Face[6];
+		int mNumFaces = detector.findFaces(bitmap1, mface);
+		
+		if(mNumFaces > 0) {
+			System.out.println("识别到了脸"+mNumFaces);
+			for(int i = 0; i < mNumFaces; i++) {
+				PointF point = new PointF();
+				mface[i].getMidPoint(point);
+				System.out.println("脸中心坐标" + point.x +":"+ point.y);
+			}
+		}
+		else {
+			System.out.println("没有识别到脸");
+		}
 		
 		paint = new Paint();
 		paint.setStrokeWidth(5);
@@ -78,129 +94,7 @@ public class MainActivity extends Activity {
 		
 		iv_1.setImageBitmap(alterbitmap);
 		
-		sb1.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			
-			@Override
-			public void onStopTrackingTouch(SeekBar arg0) {
-				// TODO Auto-generated method stub
-				int progress = sb1.getProgress();
-				cm.set(new float[]{
-						progress/128.0f, 0, 0, 0, 0,
-						0, 1, 0, 0, 0,
-						0, 0, 1, 0, 0,
-						0, 0, 0, 1, 0,
-				});
-				paint.setColorFilter(new ColorMatrixColorFilter(cm));
-				canvas.drawBitmap(bitmap1, m, paint);
-				iv_1.setImageBitmap(alterbitmap);
-			}
-			
-			@Override
-			public void onStartTrackingTouch(SeekBar arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
-		sb2.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			
-			@Override
-			public void onStopTrackingTouch(SeekBar arg0) {
-				// TODO Auto-generated method stub
-				int progress = sb2.getProgress();
-				cm.set(new float[]{
-						1, 0, 0, 0, 0,
-						0, progress/128.0f, 0, 0, 0,
-						0, 0, 1, 0, 0,
-						0, 0, 0, 1, 0,
-				});
-				paint.setColorFilter(new ColorMatrixColorFilter(cm));
-				canvas.drawBitmap(bitmap1, m, paint);
-				iv_1.setImageBitmap(alterbitmap);
-			}
-			
-			@Override
-			public void onStartTrackingTouch(SeekBar arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
-		sb3.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			
-			@Override
-			public void onStopTrackingTouch(SeekBar arg0) {
-				// TODO Auto-generated method stub
-				int progress = sb3.getProgress();
-				cm.set(new float[]{
-						1, 0, 0, 0, 0,
-						0, 1, 0, 0, 0,
-						0, 0, progress/128.0f, 0, 0,
-						0, 0, 0, 1, 0,
-				});
-				paint.setColorFilter(new ColorMatrixColorFilter(cm));
-				canvas.drawBitmap(bitmap1, m, paint);
-				iv_1.setImageBitmap(alterbitmap);
-			}
-			
-			@Override
-			public void onStartTrackingTouch(SeekBar arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
-		
-		//调节白的程度
-		sb4.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			
-			@Override
-			public void onStopTrackingTouch(SeekBar arg0) {
-				// TODO Auto-generated method stub
-				int progress = sb4.getProgress();
-/*				cm.set(new float[]{
-						progress/128.0f, 0, 0, 0, 0,
-						0, progress/128.0f, 0, 0, 0,
-						0, 0, progress/128.0f, 0, 0,
-						0, 0, 0, 1, 0,
-				});*/
-				//或者用上面的方法 都可以 下面到一行简洁
-				cm.setSaturation(progress/128.0f);
-				paint.setColorFilter(new ColorMatrixColorFilter(cm));
-				canvas.drawBitmap(bitmap1, m, paint);
-				iv_1.setImageBitmap(alterbitmap);
-			}
-			
-			@Override
-			public void onStartTrackingTouch(SeekBar arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+
 
 	}
 
