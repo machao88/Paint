@@ -64,6 +64,8 @@ public class MainActivity extends Activity {
 			0, 0, 1,
 		});
 		//m.setScale(2.0f, 1.0f);
+		m.setRotate(45, bitmap1.getWidth()/2, bitmap1.getHeight()/2);//以图像中心为原点，旋转
+		paint.setAntiAlias(true);//消除锯齿，使图像旋转时，尽量不丢失数据。  看起来好一点点。
 		canvas.drawBitmap(bitmap1, m, paint);
 		
 		iv_2.setImageBitmap(bitmap2);
