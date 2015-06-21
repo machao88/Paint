@@ -18,7 +18,9 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -59,11 +61,20 @@ public class MainActivity extends Activity {
 		
 		paint = new Paint();
 		paint.setStrokeWidth(5);
-		paint.setColor(Color.BLACK);
-		paint.setColorFilter(new ColorMatrixColorFilter(cm));
+		paint.setColor(Color.GREEN);
+//		paint.setColorFilter(new ColorMatrixColorFilter(cm));
+		paint.setTextSize(40);
+		paint.setTypeface(Typeface.DEFAULT);
+		Path p = new Path();
+		p.moveTo(20, 20);
+		p.lineTo(100, 150);
+		p.lineTo(200, 220);
+		
+		
 		canvas = new Canvas(alterbitmap);
 		m = new Matrix();
 		canvas.drawBitmap(bitmap1, m, paint);
+		canvas.drawTextOnPath("Hello this is text on a path", p, 0, 0, paint);
 		
 		iv_1.setImageBitmap(alterbitmap);
 		
