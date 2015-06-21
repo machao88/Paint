@@ -46,31 +46,21 @@ public class MainActivity extends Activity {
 		
 		
 		Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.drawable.pre);
-		iv_1.setImageBitmap(bitmap1);
-		
-		Bitmap bitmap2 = Bitmap.createBitmap(bitmap1.getWidth(), bitmap1.getHeight(), bitmap1.getConfig());
-		
+		Bitmap alterbitmap = Bitmap.createBitmap(bitmap1.getWidth(), bitmap1.getHeight(), bitmap1.getConfig());
 		
 		paint = new Paint();
 		paint.setStrokeWidth(5);
 		paint.setColor(Color.BLACK);
 		
-		canvas = new Canvas(bitmap2);
-//		canvas.drawColor(Color.WHITE);
+		canvas = new Canvas(alterbitmap);
 		Matrix m = new Matrix();
-		
-//		//镜面效果
-//		m.setScale(-1, 1);
-//		m.postTranslate(bitmap1.getWidth(), 0);
-		//倒影效果
-		m.setScale(1, -1);
-		m.postTranslate(0, bitmap1.getHeight());
-		
-		
 		canvas.drawBitmap(bitmap1, m, paint);
 		
-		iv_2.setImageBitmap(bitmap2);
-
+		Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+		canvas.drawBitmap(bitmap2, m, paint);
+		
+		iv_1.setImageBitmap(alterbitmap);
+		
  
 		
 
